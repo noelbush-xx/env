@@ -1,0 +1,32 @@
+[user]
+	name = nsh
+	email = noel.bush@ableton.com
+[alias]
+        b = branch
+        bb = branch -avv
+        bd = branch -d
+        bnuke = !git branch -d $1 && git push --delete origin
+        c = commit -am
+        ce = commit -ae
+        co = checkout
+        d = diff
+        df = diff --name-status
+        f = fetch
+        l = log
+        lt = log --oneline --graph
+        lf = log --name-status
+        p = pull
+        pp = push -u origin HEAD
+        s = status -sb
+        setuser = !git_setuser.py
+        ro = !git rebase origin/`git branch | grep \\* | awk '{print $2}'`
+[color]
+        diff = auto
+        status = auto
+        branch = auto
+        interactive = auto
+        ui = auto
+        pager = true
+[giggle]
+	main-window-maximized = false
+	main-window-geometry = 1918x944+0+17

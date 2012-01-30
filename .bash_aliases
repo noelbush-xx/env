@@ -1,0 +1,1 @@
+alias lr='ls -ralt'
