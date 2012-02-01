@@ -39,6 +39,16 @@
 (global-set-key (read-kbd-macro "C-c C-c") 'comment-or-uncomment-region)
 (global-set-key (read-kbd-macro "<insert>") 'nil)
 
+(global-set-key [f6] 'revert-all-buffers)
+(defun revert-all-buffers ()
+  "Refreshes all open buffers from their respective files."
+  (interactive)
+  (dolist (buf (buffer-list))
+    (with-current-buffer buf
+      (when (and (buffer-file-name) (not (buffer-modified-p)))
+	(revert-buffer t t t) )))
+  (message "Refreshed open files."))
+
 (global-set-key
  (read-kbd-macro "C-x p") "import pdb; pdb.set_trace() # --nsh DEBUG")
 
