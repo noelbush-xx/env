@@ -1,1 +1,1 @@
-My bash environment stuff.
+My bash/emacs/python/git/etc environment stuff.

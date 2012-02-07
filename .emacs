@@ -1,5 +1,9 @@
-(load-file "~/.emacs.d/emacs-for-python/epy-init.el")
-(add-to-list 'load-path "~/.emacs.d")
+(load-file "~/.emacs.d/elisp/emacs-for-python/epy-init.el")
+(add-to-list 'load-path "~/.emacs.d/elisp/")
+(let ((default-directory  "~/.emacs.d/elisp/"))
+  (normal-top-level-add-subdirs-to-load-path))
+
+(require 'feature-mode)
 
 (setq inhibit-startup-message t)
 (setq transient-mark-mode t)
@@ -38,6 +42,7 @@
 (global-set-key [f5] 'really-refresh-file)
 (global-set-key (read-kbd-macro "C-c C-c") 'comment-or-uncomment-region)
 (global-set-key (read-kbd-macro "<insert>") 'nil)
+(global-unset-key (kbd "C-M-l"))
 
 (global-set-key [f6] 'revert-all-buffers)
 (defun revert-all-buffers ()
@@ -56,6 +61,9 @@
  '(default ((t (:foreground "white" :background "black" :bold t))) t)
  '(isearch ((t (:foreground "black" :background "yellow"))) t)
 )
+
+;; Do not ask about following symlinks.
+(setq vc-follow-symlinks t)
 
 (show-paren-mode t)
 
@@ -108,3 +116,4 @@
 	 			  dired-directory
 				  (revert-buffer-function " %b"
 				  ("%b - Dir:  " default-directory)))))))
+(server-start)

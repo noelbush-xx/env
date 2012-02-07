@@ -103,4 +103,4 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
 fi
 
 export PYTHONSTARTUP="$HOME/.pystartup"
-export EDITOR="emacs -nw"
+export EDITOR="emacsclient -t"
