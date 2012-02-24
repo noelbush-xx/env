@@ -5,6 +5,18 @@
 
 (require 'feature-mode)
 
+(autoload 'markdown-mode "markdown-mode.el"
+   "Major mode for editing Markdown files" t)
+(setq auto-mode-alist
+   (cons '("\\.md" . markdown-mode) auto-mode-alist))
+
+(require 'haml-mode)
+
+(add-hook 'haml-mode-hook
+	  '(lambda ()
+	     (setq indent-tabs-mode nil)
+	     (define-key haml-mode-map "\C-m" 'newline-and-indent)))
+
 (setq inhibit-startup-message t)
 (setq transient-mark-mode t)
 
@@ -34,15 +46,7 @@
 (setq uniquify-after-kill-buffer-p t)
 (setq uniquify-ignore-buffers-re "^\\*")
 
-(global-set-key [f4] 'goto-line)
-(defun really-refresh-file ()
-  (interactive)
-  (revert-buffer t t t)
-  )
-(global-set-key [f5] 'really-refresh-file)
-(global-set-key (read-kbd-macro "C-c C-c") 'comment-or-uncomment-region)
-(global-set-key (read-kbd-macro "<insert>") 'nil)
-(global-unset-key (kbd "C-M-l"))
+(require 'grep-buffers)
 
 (global-set-key [f6] 'revert-all-buffers)
 (defun revert-all-buffers ()
@@ -80,7 +84,7 @@
 ;; (this method will render the setting of frame size unreliable, this
 ;; could be resolved by using the .Xresources file instead)
 (tool-bar-mode 0)
-(menu-bar-mode 0)
+;(menu-bar-mode 0)
 (set-scroll-bar-mode nil)
 
 ;; Activate python highlighting for PYX and PPL files
@@ -116,4 +120,18 @@
 	 			  dired-directory
 				  (revert-buffer-function " %b"
 				  ("%b - Dir:  " default-directory)))))))
+
+(global-set-key [f4] 'goto-line)
+(defun really-refresh-file ()
+  (interactive)
+  (revert-buffer t t t)
+  )
+(global-set-key [f5] 'really-refresh-file)
+(global-set-key (read-kbd-macro "C-M-c") 'comment-or-uncomment-region)
+(global-set-key (read-kbd-macro "<insert>") 'nil)
+(global-unset-key (kbd "C-M-l"))
+
+;; Start sh-mode for this/these too....
+(add-to-list 'auto-mode-alist '(".bash_aliases'" . sh-mode))
+
 (server-start)

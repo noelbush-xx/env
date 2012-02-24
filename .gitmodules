@@ -1,3 +1,6 @@
 [submodule ".emacs.d/elisp/emacs-for-python"]
 	path = .emacs.d/elisp/emacs-for-python
 	url = https://github.com/gabrielelanaro/emacs-for-python.git
+[submodule ".emacs.d/elisp/haml-mode"]
+	path = .emacs.d/elisp/haml-mode
+	url = https://github.com/nex3/haml-mode.git

@@ -102,5 +102,7 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 
+# Enable virtualenvwrapper functionality.
+
 export PYTHONSTARTUP="$HOME/.pystartup"
 export EDITOR="emacsclient -t"
