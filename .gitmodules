@@ -4,3 +4,6 @@
 [submodule ".emacs.d/elisp/haml-mode"]
 	path = .emacs.d/elisp/haml-mode
 	url = https://github.com/nex3/haml-mode.git
+[submodule ".emacs.d/elisp/pylookup"]
+	path = .emacs.d/elisp/pylookup
+	url = https://github.com/tsgates/pylookup.git

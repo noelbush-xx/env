@@ -1,4 +1,4 @@
-alias lr='ls -ralt'
+alias lr='ls -ralt --color=auto'
 alias rmpyc="find -name '*.pyc' -exec rm {} \;"
 
 # "fnl" == "find named like"
@@ -6,9 +6,14 @@ function fnl() {
   find -name "*$@*"
 }
 
-# "pyg" == "grep in python files"
+# "pyg" == "python grep -- grep in python files"
 function pyg() {
   find -name '*.py' -exec egrep --color --with-filename "$@" {} \;
+}
+
+# "fig" == "file grep -- grep in all files"
+function fig() {
+  find -exec egrep --color --with-filename "$@" {} \;
 }
 
 # switch_to --> switch virtualenv *AND* go to the right directory
