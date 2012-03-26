@@ -16,13 +16,15 @@ function fig() {
   find -exec egrep --color --with-filename "$@" {} \;
 }
 
-# switch_to --> switch virtualenv *AND* go to the right directory
+# switch_to --> switch virtualenv and git branch *AND* go to the right directory
 function now_on() {
   venv_name=$1
   proj_name=`echo $venv_name | sed -e 's/_.\+//' -`
+  branch_name=`echo $venv_name | sed -e 's/^[^_]\+_//' -`
   shopt -q expand_aliases
   workon $venv_name
   cd $HOME/projects/$proj_name
+  git checkout $branch_name
 }
 
 complete -o nospace -F _virtualenvs now_on

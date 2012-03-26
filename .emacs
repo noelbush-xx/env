@@ -33,7 +33,7 @@
 ;; Frame title bar formatting to show full path of file
 (setq-default
  frame-title-format
- (list '((buffer-file-name " %f" (dired-directory 
+ (list '((buffer-file-name " %f" (dired-directory
 	 			  dired-directory
 				  (revert-buffer-function " %b"
 				  ("%b - Dir:  " default-directory)))))))
@@ -56,6 +56,11 @@
 (setq fci-rule-color "gray20")
 (add-hook 'after-change-major-mode-hook (lambda () (fci-mode 1)))
 
+; Make cool-looking lambdas.
+(require 'lambda-mode)
+(setq lambda-symbol (string (make-char 'greek-iso8859-7 107)))
+(add-hook 'after-change-major-mode-hook (lambda () (lambda-mode 1)))
+
 ; make buffer names more understandable
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'reverse)
@@ -72,6 +77,54 @@
 (define-key comint-mode-map (kbd "M-") 'comint-previous-input)
 (define-key comint-mode-map [down] 'comint-next-matching-input-from-input)
 (define-key comint-mode-map [up] 'comint-previous-matching-input-from-input)
+
+; Autopair matching elements (parentheses, etc.).
+(autoload 'autopair-global-mode "autopair" nil t)
+(autopair-global-mode)
+(add-hook 'lisp-mode-hook
+          #'(lambda () (setq autopair-dont-activate t)))
+
+; Delete trailing spaces when saving.
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+; Set up Yasnippet.
+(require 'yasnippet)
+(yas/initialize)
+(yas/load-directory "~/.emacs.d/my-snippets/")
+
+; Make browse-url use Chrome.
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "google-chrome")
+
+; Use Ido
+(require 'ido)
+(setq ido-enable-flex-matching t) ;; enable fuzzy matching
+(setq ido-everywhere t)
+(setq ido-ignore-extensions t)
+(ido-mode t)
+
+; Use SmartScan (from http://www.masteringemacs.org/articles/2011/01/14/effective-editing-movement/)
+(require 'smart-scan)
+
+; Use cycbuf and customize its keybindings
+(require 'cycbuf)
+(global-set-key [(ctrl next)]       'cycbuf-switch-to-next-buffer)
+(global-set-key [(ctrl prior)]        'cycbuf-switch-to-previous-buffer)
+;(global-set-key [(meta super right)] 'cycbuf-switch-to-next-buffer-no-timeout)
+;(global-set-key [(meta super left)]  'cycbuf-switch-to-previous-buffer-no-timeout)
+
+; Load Cedet (needed for ECB)
+(global-ede-mode 1)                      ; Enable the Project management system
+(semantic-mode 1)
+
+; Set up ECB
+(add-to-list 'load-path "~/.emacs.d/elisp/ecb-2.40")
+(require 'ecb)
+
+;; Line numbering
+(setq linum-format "%4d")
+(global-linum-mode 1)
+
 
 ;; -----------------------------------------------------------------------------
 ;; Keybindings
@@ -114,10 +167,13 @@
 (set-cursor-color "white")
 (set-face-background 'region "gray20")
 
-(custom-set-faces  ;;  only one 'custom-set-faces' entry may exist in .emacs!!
- '(default ((t (:foreground "white" :background "black" :bold t))) t)
- '(isearch ((t (:foreground "black" :background "yellow"))) t)
-)
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(default ((t (:foreground "white" :background "black" :bold t))))
+ '(isearch ((t (:foreground "black" :background "yellow")))))
 
 (set-face-attribute 'default nil :height 105)
 
@@ -127,26 +183,61 @@
 ;;
 ;(load-file "~/.emacs.d/elisp/emacs-for-python/epy-init.el")
 
-(global-set-key
- (read-kbd-macro "C-x p") "import pdb; pdb.set_trace() # --nsh DEBUG")
-
 ;; Activate python highlighting for .py, .pyx and .ppl files
 (require 'python-mode)
 (add-to-list 'auto-mode-alist '("\\.p\(pl\|y\(x\|\)\\'" . python-mode))
 
 (require 'ipython)
 
-; Make cool-looking lambdas.
-(require 'lambda-mode)
-(add-hook 'python-mode-hook #'lambda-mode 1)
-(setq lambda-symbol (string (make-char 'greek-iso8859-7 107)))
+; Use Auto-complete
+(require 'auto-complete-config nil t)
+;(add-to-list 'ac-dictionary-directories (concat epy-install-dir "elpa-to-submit/auto-complete/dict/"))
 
-; Use Anything for code completion.
-(require 'anything)
-(require 'anything-ipython)
-(when (require 'anything-show-completion nil t)
-   (use-anything-show-completion 'anything-ipython-complete
-                                 '(length initial-pattern)))
+; Make it easy to insert debug statements, and highlight them.
+(defun python-add-breakpoint ()
+  (interactive)
+  ;(py-newline-and-indent)
+  (insert "import ipdb; ipdb.set_trace()")
+  (highlight-lines-matching-regexp "^[ 	]*import ipdb; ipdb.set_trace()"))
+(define-key python-mode-map (kbd "C-x p") 'python-add-breakpoint)
+
+(defun annotate-pdb ()
+  (interactive)
+  (highlight-lines-matching-regexp "import pdb")
+  (highlight-lines-matching-regexp "pdb.set_trace()"))
+(add-hook 'python-mode-hook 'annotate-pdb)
+
+;; ; Use Anything for code completion.
+;; (require 'anything)
+;; (require 'anything-ipython)
+;; (add-hook 'python-mode-hook #'(lambda ()
+;; 				(define-key py-mode-map (kbd "C-<tab>") 'anything-ipython-complete)))
+;; (add-hook 'ipython-shell-hook #'(lambda ()
+;; 				  (define-key py-mode-map (kbd "C-<tab>") 'anything-ipython-complete)))
+;; (when (require 'anything-show-completion nil t)
+;;    (use-anything-show-completion 'anything-ipython-complete
+;;                                  '(length initial-pattern)))
+
+; Use Pylookup to search Python docs.
+(autoload 'pylookup-lookup "pylookup")
+(autoload 'pylookup-update "pylookup")
+(setq pylookup-program "~/.emacs.d/elisp/pylookup/pylookup.py")
+(setq pylookup-db-file "~/.emacs.d/pylookup.db")
+(global-set-key "\C-ch" 'pylookup-lookup)
+
+; Make Autopair work right with single and triple quotes.
+(add-hook 'python-mode-hook
+          #'(lambda ()
+              (push '(?' . ?')
+                    (getf autopair-extra-pairs :code))
+              (setq autopair-handle-action-fns
+                    (list #'autopair-default-handle-action
+                          #'autopair-python-triple-quote-action))))
+
+; Be pedantic.
+(require 'python-pep8)
+(require 'python-pylint)
+
 
 ;; -----------------------------------------------------------------------------
 ;; Other mode specific
@@ -169,3 +260,10 @@
 ;; Last things last....
 ;;
 (server-start)
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(completion-ignored-extensions (quote (".o" "~" ".bin" ".lbin" ".so" ".a" ".ln" ".blg" ".bbl" ".elc" ".lof" ".glo" ".idx" ".lot" ".svn/" ".hg/" ".git/" ".bzr/" "CVS/" "_darcs/" "_MTN/" ".fmt" ".tfm" ".class" ".fas" ".lib" ".mem" ".x86f" ".sparcf" ".fasl" ".ufsl" ".fsl" ".dxl" ".pfsl" ".dfsl" ".p64fsl" ".d64fsl" ".dx64fsl" ".lo" ".la" ".gmo" ".mo" ".toc" ".aux" ".cp" ".fn" ".ky" ".pg" ".tp" ".vr" ".cps" ".fns" ".kys" ".pgs" ".tps" ".vrs" ".pyc" ".pyo" ".egg-info")))
+ '(ecb-options-version "2.40"))
