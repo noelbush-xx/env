@@ -1,3 +1,6 @@
+# Add ~/bin to PATH
+export PATH=$PATH:$HOME/bin
+
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 

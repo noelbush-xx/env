@@ -1,105 +1,26 @@
-(load-file "~/.emacs.d/elisp/emacs-for-python/epy-init.el")
+;; -----------------------------------------------------------------------------
+;; General config
+;;
 (add-to-list 'load-path "~/.emacs.d/elisp/")
 (let ((default-directory  "~/.emacs.d/elisp/"))
   (normal-top-level-add-subdirs-to-load-path))
 
-(require 'feature-mode)
-
 (setq inhibit-startup-message t)
 (setq transient-mark-mode t)
 
-(defvar user-temporary-file-directory
-  "~/.emacs-autosaves/")
-(make-directory user-temporary-file-directory t)
-(setq backup-by-copying t)
-(setq backup-directory-alist
-      `(("." . ,user-temporary-file-directory)
-        (tramp-file-name-regexp nil)))
-(setq auto-save-list-file-prefix
-      (concat user-temporary-file-directory ".auto-saves-"))
-(setq auto-save-file-name-transforms
-      `((".*" ,user-temporary-file-directory t)))
-
-(setq-default fill-column 80)
-(require 'fill-column-indicator)
-(setq fci-rule-color "gray10")
-(add-hook 'python-mode-hook (lambda () (interactive) (fci-mode)))
-
-(set-cursor-color "white")
-(set-face-background 'region "gray20")
-
-(require 'uniquify)
-(setq uniquify-buffer-name-style 'reverse)
-(setq uniquify-separator "|")
-(setq uniquify-after-kill-buffer-p t)
-(setq uniquify-ignore-buffers-re "^\\*")
-
-(global-set-key [f4] 'goto-line)
-(defun really-refresh-file ()
-  (interactive)
-  (revert-buffer t t t)
-  )
-(global-set-key [f5] 'really-refresh-file)
-(global-set-key (read-kbd-macro "C-c C-c") 'comment-or-uncomment-region)
-(global-set-key (read-kbd-macro "<insert>") 'nil)
-(global-unset-key (kbd "C-M-l"))
-
-(global-set-key [f6] 'revert-all-buffers)
-(defun revert-all-buffers ()
-  "Refreshes all open buffers from their respective files."
-  (interactive)
-  (dolist (buf (buffer-list))
-    (with-current-buffer buf
-      (when (and (buffer-file-name) (not (buffer-modified-p)))
-	(revert-buffer t t t) )))
-  (message "Refreshed open files."))
-
-(global-set-key
- (read-kbd-macro "C-x p") "import pdb; pdb.set_trace() # --nsh DEBUG")
-
-(custom-set-faces  ;;  only one 'custom-set-faces' entry may exist in .emacs!!
- '(default ((t (:foreground "white" :background "black" :bold t))) t)
- '(isearch ((t (:foreground "black" :background "yellow"))) t)
-)
-
-;; Do not ask about following symlinks.
 (setq vc-follow-symlinks t)
-
 (show-paren-mode t)
 
-(setq default-frame-alist
- '(
-    (width             . 75)
-    (height            . 50)
-  )
-)
-
-(set-face-attribute 'default nil :height 105)
-
-;; turn off the toolbar, menubar or scrollbar
-;; (this method will render the setting of frame size unreliable, this
-;; could be resolved by using the .Xresources file instead)
+; No toolbar, could hide menus too, but they're nice sometimes
 (tool-bar-mode 0)
-(menu-bar-mode 0)
+;(menu-bar-mode 0)
 (set-scroll-bar-mode nil)
-
-;; Activate python highlighting for PYX and PPL files
-(add-to-list 'auto-mode-alist '(".pyx'" . python-mode))
-(add-to-list 'auto-mode-alist '(".ppl'" . python-mode))
 
 ;; font locking (i.e. syntax highlighting) spanning more than one line
 (setq font-latex-do-multi-line t)
 
-;; enable/disable highlighting of subscript and superscript via raised
-;; or lowered text
+;; enable/disable highlighting of subscript and superscript via raised or lowered text
 (setq font-latex-fontify-script nil)
-
-;; *********************
-;; *** miscellaneous ***
-;; *********************
-
-;; Activate font-lock mode (syntax coloring).
-(global-font-lock-mode t)
 
 ;; Line numbers are good.  Getting column numbering as well is better.
 (column-number-mode t)
@@ -112,8 +33,237 @@
 ;; Frame title bar formatting to show full path of file
 (setq-default
  frame-title-format
- (list '((buffer-file-name " %f" (dired-directory 
+ (list '((buffer-file-name " %f" (dired-directory
 	 			  dired-directory
 				  (revert-buffer-function " %b"
 				  ("%b - Dir:  " default-directory)))))))
+
+; autosave behavior
+(defvar user-temporary-file-directory "~/.emacs-autosaves/")
+(make-directory user-temporary-file-directory t)
+(setq backup-by-copying t)
+(setq backup-directory-alist
+      `(("." . ,user-temporary-file-directory)
+        (tramp-file-name-regexp nil)))
+(setq auto-save-list-file-prefix
+      (concat user-temporary-file-directory ".auto-saves-"))
+(setq auto-save-file-name-transforms
+      `((".*" ,user-temporary-file-directory t)))
+
+; show column 80
+(require 'fill-column-indicator)
+(setq-default fill-column 80)
+(setq fci-rule-color "gray20")
+(add-hook 'after-change-major-mode-hook (lambda () (fci-mode 1)))
+
+; Make cool-looking lambdas.
+(require 'lambda-mode)
+(setq lambda-symbol (string (make-char 'greek-iso8859-7 107)))
+(add-hook 'after-change-major-mode-hook (lambda () (lambda-mode 1)))
+
+; make buffer names more understandable
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'reverse)
+(setq uniquify-separator "|")
+(setq uniquify-after-kill-buffer-p t)
+(setq uniquify-ignore-buffers-re "^\\*")
+
+; Let us grep our buffers, brothers.
+(require 'grep-buffers)
+
+; Change comint to allow cycling through input history using arrow keys.
+(require 'comint)
+(define-key comint-mode-map (kbd "M-") 'comint-next-input)
+(define-key comint-mode-map (kbd "M-") 'comint-previous-input)
+(define-key comint-mode-map [down] 'comint-next-matching-input-from-input)
+(define-key comint-mode-map [up] 'comint-previous-matching-input-from-input)
+
+; Autopair matching elements (parentheses, etc.).
+(autoload 'autopair-global-mode "autopair" nil t)
+(autopair-global-mode)
+(add-hook 'lisp-mode-hook
+          #'(lambda () (setq autopair-dont-activate t)))
+
+; Delete trailing spaces when saving.
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+; Set up Yasnippet.
+(require 'yasnippet)
+(yas/initialize)
+(yas/load-directory "~/.emacs.d/my-snippets/")
+
+; Make browse-url use Chrome.
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "google-chrome")
+
+; Use Ido
+(require 'ido)
+(setq ido-enable-flex-matching t) ;; enable fuzzy matching
+(setq ido-everywhere t)
+(setq ido-ignore-extensions t)
+(ido-mode t)
+
+; Use SmartScan (from http://www.masteringemacs.org/articles/2011/01/14/effective-editing-movement/)
+(require 'smart-scan)
+
+; Use cycbuf and customize its keybindings
+(require 'cycbuf)
+(global-set-key [(ctrl next)]       'cycbuf-switch-to-next-buffer)
+(global-set-key [(ctrl prior)]        'cycbuf-switch-to-previous-buffer)
+;(global-set-key [(meta super right)] 'cycbuf-switch-to-next-buffer-no-timeout)
+;(global-set-key [(meta super left)]  'cycbuf-switch-to-previous-buffer-no-timeout)
+
+; Load Cedet (needed for ECB)
+(global-ede-mode 1)                      ; Enable the Project management system
+(semantic-mode 1)
+
+; Set up ECB
+(add-to-list 'load-path "~/.emacs.d/elisp/ecb-2.40")
+(require 'ecb)
+
+;; Line numbering
+(setq linum-format "%4d")
+(global-linum-mode 1)
+
+
+;; -----------------------------------------------------------------------------
+;; Keybindings
+;;
+
+; F4: Goto line
+(global-set-key [f4] 'goto-line)
+
+; F5: Refresh file
+(global-set-key [f5] 'really-refresh-file)
+(defun really-refresh-file ()
+  (interactive)
+  (revert-buffer t t t)
+  )
+
+; F6: Revert all buffers
+(global-set-key [f6] 'revert-all-buffers)
+(defun revert-all-buffers ()
+  "Refreshes all open buffers from their respective files."
+  (interactive)
+  (dolist (buf (buffer-list))
+    (with-current-buffer buf
+      (when (and (buffer-file-name) (not (buffer-modified-p)))
+	(revert-buffer t t t) )))
+  (message "Refreshed open files."))
+
+; C-M-c: Comment/uncomment region
+(global-set-key (read-kbd-macro "C-M-c") 'comment-or-uncomment-region)
+
+; misc
+(global-set-key (read-kbd-macro "<insert>") 'nil)
+;(global-unset-key (kbd "C-M-l"))
+
+
+;; -----------------------------------------------------------------------------
+;; Appearance
+;;
+(global-font-lock-mode t)
+
+(set-cursor-color "white")
+(set-face-background 'region "gray20")
+
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(default ((t (:foreground "white" :background "black" :bold t))))
+ '(isearch ((t (:foreground "black" :background "yellow")))))
+
+(set-face-attribute 'default nil :height 105)
+
+
+;; -----------------------------------------------------------------------------
+;; Python-specific
+;;
+;(load-file "~/.emacs.d/elisp/emacs-for-python/epy-init.el")
+
+;; Activate python highlighting for .py, .pyx and .ppl files
+(require 'python-mode)
+(add-to-list 'auto-mode-alist '("\\.p\(pl\|y\(x\|\)\\'" . python-mode))
+
+(require 'ipython)
+
+; Use Auto-complete
+(require 'auto-complete-config nil t)
+;(add-to-list 'ac-dictionary-directories (concat epy-install-dir "elpa-to-submit/auto-complete/dict/"))
+
+; Make it easy to insert debug statements, and highlight them.
+(defun python-add-breakpoint ()
+  (interactive)
+  ;(py-newline-and-indent)
+  (insert "import ipdb; ipdb.set_trace()")
+  (highlight-lines-matching-regexp "^[ 	]*import ipdb; ipdb.set_trace()"))
+(define-key python-mode-map (kbd "C-x p") 'python-add-breakpoint)
+
+(defun annotate-pdb ()
+  (interactive)
+  (highlight-lines-matching-regexp "import pdb")
+  (highlight-lines-matching-regexp "pdb.set_trace()"))
+(add-hook 'python-mode-hook 'annotate-pdb)
+
+;; ; Use Anything for code completion.
+;; (require 'anything)
+;; (require 'anything-ipython)
+;; (add-hook 'python-mode-hook #'(lambda ()
+;; 				(define-key py-mode-map (kbd "C-<tab>") 'anything-ipython-complete)))
+;; (add-hook 'ipython-shell-hook #'(lambda ()
+;; 				  (define-key py-mode-map (kbd "C-<tab>") 'anything-ipython-complete)))
+;; (when (require 'anything-show-completion nil t)
+;;    (use-anything-show-completion 'anything-ipython-complete
+;;                                  '(length initial-pattern)))
+
+; Use Pylookup to search Python docs.
+(autoload 'pylookup-lookup "pylookup")
+(autoload 'pylookup-update "pylookup")
+(setq pylookup-program "~/.emacs.d/elisp/pylookup/pylookup.py")
+(setq pylookup-db-file "~/.emacs.d/pylookup.db")
+(global-set-key "\C-ch" 'pylookup-lookup)
+
+; Make Autopair work right with single and triple quotes.
+(add-hook 'python-mode-hook
+          #'(lambda ()
+              (push '(?' . ?')
+                    (getf autopair-extra-pairs :code))
+              (setq autopair-handle-action-fns
+                    (list #'autopair-default-handle-action
+                          #'autopair-python-triple-quote-action))))
+
+; Be pedantic.
+(require 'python-pep8)
+(require 'python-pylint)
+
+
+;; -----------------------------------------------------------------------------
+;; Other mode specific
+;;
+(require 'feature-mode)
+
+(autoload 'markdown-mode "markdown-mode.el"
+   "Major mode for editing Markdown files" t)
+(setq auto-mode-alist
+   (cons '("\\.md" . markdown-mode) auto-mode-alist))
+
+(require 'haml-mode)
+
+(add-hook 'haml-mode-hook
+	  '(lambda ()
+	     (setq indent-tabs-mode nil)
+	     (define-key haml-mode-map "\C-m" 'newline-and-indent)))
+
+;;
+;; Last things last....
+;;
 (server-start)
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(completion-ignored-extensions (quote (".o" "~" ".bin" ".lbin" ".so" ".a" ".ln" ".blg" ".bbl" ".elc" ".lof" ".glo" ".idx" ".lot" ".svn/" ".hg/" ".git/" ".bzr/" "CVS/" "_darcs/" "_MTN/" ".fmt" ".tfm" ".class" ".fas" ".lib" ".mem" ".x86f" ".sparcf" ".fasl" ".ufsl" ".fsl" ".dxl" ".pfsl" ".dfsl" ".p64fsl" ".d64fsl" ".dx64fsl" ".lo" ".la" ".gmo" ".mo" ".toc" ".aux" ".cp" ".fn" ".ky" ".pg" ".tp" ".vr" ".cps" ".fns" ".kys" ".pgs" ".tps" ".vrs" ".pyc" ".pyo" ".egg-info")))
+ '(ecb-options-version "2.40"))
