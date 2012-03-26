@@ -16,3 +16,6 @@
 [submodule ".emacs.d/elisp/yasnippet"]
 	path = .emacs.d/elisp/yasnippet
 	url = https://github.com/capitaomorte/yasnippet.git
+[submodule ".emacs.d/elisp/cycbuf"]
+        path = .emacs.d/elisp/cycbuf
+        url = https://github.com/emacsmirror/cycbuf.git
