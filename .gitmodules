@@ -19,3 +19,6 @@
 [submodule ".emacs.d/elisp/cycbuf"]
 	path = .emacs.d/elisp/cycbuf
 	url = https://github.com/emacsmirror/cycbuf.git
+[submodule ".emacs.d/elisp/python-mode"]
+	path = .emacs.d/elisp/python-mode
+	url = https://github.com/emacsmirror/python-mode.git
