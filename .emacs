@@ -173,6 +173,7 @@
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(default ((t (:foreground "white" :background "black" :bold t))))
+ '(ecb-tag-header-face ((((class color) (background dark)) (:background "SeaGreen1" :foreground "black"))))
  '(isearch ((t (:foreground "black" :background "yellow")))))
 
 (set-face-attribute 'default nil :height 105)
@@ -256,16 +257,29 @@
 	     (setq indent-tabs-mode nil)
 	     (define-key haml-mode-map "\C-m" 'newline-and-indent)))
 
-;;
-;; Last things last....
-;;
-(server-start)
+(require 'coffee-mode)
+(defun coffee-custom ()
+  "coffee-mode-hook"
+  (set (make-local-variable 'tab-width) 2))
+
+(add-hook 'coffee-mode-hook
+	  '(lambda() (coffee-custom)))
+
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(completion-ignored-extensions (quote (".o" "~" ".bin" ".lbin" ".so" ".a" ".ln" ".blg" ".bbl" ".elc" ".lof" ".glo" ".idx" ".lot" ".svn/" ".hg/" ".git/" ".bzr/" "CVS/" "_darcs/" "_MTN/" ".fmt" ".tfm" ".class" ".fas" ".lib" ".mem" ".x86f" ".sparcf" ".fasl" ".ufsl" ".fsl" ".dxl" ".pfsl" ".dfsl" ".p64fsl" ".d64fsl" ".dx64fsl" ".lo" ".la" ".gmo" ".mo" ".toc" ".aux" ".cp" ".fn" ".ky" ".pg" ".tp" ".vr" ".cps" ".fns" ".kys" ".pgs" ".tps" ".vrs" ".pyc" ".pyo" ".egg-info")))
- '(ecb-options-version "2.40"))
+ '(ecb-options-version "2.40")
+ '(ecb-source-file-regexps (quote ((".*" ("\\(^\\(\\.\\|#\\)\\|\\(~$\\|\\.\\(elc\\|obj\\|o\\|class\\|lib\\|dll\\|a\\|so\\|cache\\|pyc\\)$\\)\\)") ("^\\.\\(emacs\\|gnus\\)$")))))
+ '(ecb-source-path (quote (("~/projects/ableton.com" "new website") ("~/projects/web" "old website") ("~/projects" "all projects") ("~/env" "environment") ("~/.virtualenvs" "virtual envs")))))
 
+(setq ecb-tip-of-the-day nil)
+
+;;
+;; Last things last....
+;;
+(server-start)
 (ecb-activate)
+
