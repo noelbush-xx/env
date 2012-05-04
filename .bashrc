@@ -48,13 +48,6 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
-if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-fi
-unset color_prompt force_color_prompt
-
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
 xterm*|rxvt*)
@@ -102,3 +95,45 @@ export EDITOR="emacsclient -t"
 
 # Read customizations of input.
 export INPUTRC=$HOME/.inputrc
+
+# if [ -f $HOME/.vemrc ] ; then
+#     source $HOME/.vemrc
+# fi
+if [ -f /usr/local/bin/virtualenvwrapper.sh ] ; then
+    source /usr/local/bin/virtualenvwrapper.sh
+fi
+
+# Trap the previous command in $P
+trap 'P=$this; this=$BASH_COMMAND' DEBUG
+
+# Color the prompt based on git status.
+function _git_prompt() {
+    local git_status="`git status -unormal 2>&1`"
+    if ! [[ "$git_status" =~ Not\ a\ git\ repo ]]; then
+        if [[ "$git_status" =~ nothing\ to\ commit ]]; then
+            local ansi=42
+        elif [[ "$git_status" =~ nothing\ added\ to\ commit\ but\ untracked\ files\ present ]]; then
+            local ansi=43
+        else
+            local ansi=45
+        fi
+        if [[ "$git_status" =~ On\ branch\ ([^[:space:]]+) ]]; then
+            branch=${BASH_REMATCH[1]}
+            test "$branch" != master || branch=' '
+        else
+            # Detached HEAD.  (branch=HEAD is a faster alternative.)
+            branch="(`git describe --all --contains --abbrev=4 HEAD 2> /dev/null ||
+                echo HEAD`)"
+        fi
+        echo -n '\[\e[0;37;'"$ansi"';1m\]'"$branch"'\[\e[0m\] '
+    fi
+}
+
+function _prompt_command() {
+    if [ "$color_prompt" = yes ]; then
+	PS1="`_git_prompt`"'${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+    else
+	PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+    fi
+}
+PROMPT_COMMAND=_prompt_command
