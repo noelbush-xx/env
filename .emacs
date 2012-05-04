@@ -184,6 +184,7 @@
 ;(load-file "~/.emacs.d/elisp/emacs-for-python/epy-init.el")
 
 ;; Activate python highlighting for .py, .pyx and .ppl files
+(autoload 'python-mode "~/.emacs.d/elisp/python-mode/python-mode.el")
 (require 'python-mode)
 (add-to-list 'auto-mode-alist '("\\.p\(pl\|y\(x\|\)\\'" . python-mode))
 
@@ -199,6 +200,7 @@
   ;(py-newline-and-indent)
   (insert "import ipdb; ipdb.set_trace()")
   (highlight-lines-matching-regexp "^[ 	]*import ipdb; ipdb.set_trace()"))
+(defvaralias 'py-mode-map 'python-mode-map)
 (define-key python-mode-map (kbd "C-x p") 'python-add-breakpoint)
 
 (defun annotate-pdb ()
@@ -260,12 +262,17 @@
 ;; Last things last....
 ;;
 (server-start)
+
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(completion-ignored-extensions (quote (".o" "~" ".bin" ".lbin" ".so" ".a" ".ln" ".blg" ".bbl" ".elc" ".lof" ".glo" ".idx" ".lot" ".svn/" ".hg/" ".git/" ".bzr/" "CVS/" "_darcs/" "_MTN/" ".fmt" ".tfm" ".class" ".fas" ".lib" ".mem" ".x86f" ".sparcf" ".fasl" ".ufsl" ".fsl" ".dxl" ".pfsl" ".dfsl" ".p64fsl" ".d64fsl" ".dx64fsl" ".lo" ".la" ".gmo" ".mo" ".toc" ".aux" ".cp" ".fn" ".ky" ".pg" ".tp" ".vr" ".cps" ".fns" ".kys" ".pgs" ".tps" ".vrs" ".pyc" ".pyo" ".egg-info")))
- '(ecb-options-version "2.40"))
+ '(ecb-options-version "2.40")
+ '(ecb-source-file-regexps (quote ((".*" ("\\(^\\(\\.\\|#\\)\\|\\(~$\\|\\.\\(elc\\|obj\\|o\\|class\\|lib\\|dll\\|a\\|so\\|cache\\|pyc\\)$\\)\\)") ("^\\.\\(emacs\\|gnus\\)$")))))
+ '(ecb-source-path (quote ("~/projects" "~/src" "~/git" "~/workspace" "~/platformer")))
+ '(ecb-tree-expand-symbol-before t))
 
+(setq ecb-tip-of-the-day nil)
 (ecb-activate)
