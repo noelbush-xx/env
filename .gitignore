@@ -3,9 +3,6 @@ src
 opt
 bin
 Downloads
-.*
-!.emacs.d
-!.gitignore
 *.pyc
 session.*
 ac-comphist.dat
