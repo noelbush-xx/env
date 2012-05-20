@@ -125,6 +125,13 @@
 (setq linum-format "%4d")
 (global-linum-mode 1)
 
+; Use Auto-complete
+(require 'auto-complete)
+(global-auto-complete-mode t)
+(require 'auto-complete-config nil t)
+(define-key ac-complete-mode-map "\t" 'ac-complete)
+(define-key ac-complete-mode-map "\r" nil)
+
 
 ;; -----------------------------------------------------------------------------
 ;; Keybindings
@@ -182,18 +189,8 @@
 ;; -----------------------------------------------------------------------------
 ;; Python-specific
 ;;
-;(load-file "~/.emacs.d/elisp/emacs-for-python/epy-init.el")
-
-;; Activate python highlighting for .py, .pyx and .ppl files
-(autoload 'python-mode "~/.emacs.d/elisp/python-mode/python-mode.el")
-(require 'python-mode)
-(add-to-list 'auto-mode-alist '("\\.p\(pl\|y\(x\|\)\\'" . python-mode))
-
+(load-library "init_python")
 (require 'ipython)
-
-; Use Auto-complete
-(require 'auto-complete-config nil t)
-;(add-to-list 'ac-dictionary-directories (concat epy-install-dir "elpa-to-submit/auto-complete/dict/"))
 
 ; Make it easy to insert debug statements, and highlight them.
 (defun python-add-breakpoint ()
@@ -209,17 +206,6 @@
   (highlight-lines-matching-regexp "import pdb")
   (highlight-lines-matching-regexp "pdb.set_trace()"))
 (add-hook 'python-mode-hook 'annotate-pdb)
-
-;; ; Use Anything for code completion.
-;; (require 'anything)
-;; (require 'anything-ipython)
-;; (add-hook 'python-mode-hook #'(lambda ()
-;; 				(define-key py-mode-map (kbd "C-<tab>") 'anything-ipython-complete)))
-;; (add-hook 'ipython-shell-hook #'(lambda ()
-;; 				  (define-key py-mode-map (kbd "C-<tab>") 'anything-ipython-complete)))
-;; (when (require 'anything-show-completion nil t)
-;;    (use-anything-show-completion 'anything-ipython-complete
-;;                                  '(length initial-pattern)))
 
 ; Use Pylookup to search Python docs.
 (autoload 'pylookup-lookup "pylookup")
