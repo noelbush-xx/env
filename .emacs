@@ -87,11 +87,6 @@
 ; Delete trailing spaces when saving.
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-; Set up Yasnippet.
-(require 'yasnippet)
-(yas/initialize)
-(yas/load-directory "~/.emacs.d/my-snippets/")
-
 ; Make browse-url use Chrome.
 (setq browse-url-browser-function 'browse-url-generic
       browse-url-generic-program "google-chrome")
@@ -189,8 +184,6 @@
 ;; -----------------------------------------------------------------------------
 ;; Python-specific
 ;;
-(load-library "init_python")
-(require 'ipython)
 
 ; Make it easy to insert debug statements, and highlight them.
 (defun python-add-breakpoint ()
@@ -207,13 +200,6 @@
   (highlight-lines-matching-regexp "pdb.set_trace()"))
 (add-hook 'python-mode-hook 'annotate-pdb)
 
-; Use Pylookup to search Python docs.
-(autoload 'pylookup-lookup "pylookup")
-(autoload 'pylookup-update "pylookup")
-(setq pylookup-program "~/.emacs.d/elisp/pylookup/pylookup.py")
-(setq pylookup-db-file "~/.emacs.d/pylookup.db")
-(global-set-key "\C-ch" 'pylookup-lookup)
-
 ; Make Autopair work right with single and triple quotes.
 (add-hook 'python-mode-hook
           #'(lambda ()
@@ -222,10 +208,6 @@
               (setq autopair-handle-action-fns
                     (list #'autopair-default-handle-action
                           #'autopair-python-triple-quote-action))))
-
-; Be pedantic.
-(require 'python-pep8)
-(require 'python-pylint)
 
 
 ;; -----------------------------------------------------------------------------
