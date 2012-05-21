@@ -174,16 +174,20 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(default ((t (:foreground "white" :background "black" :bold t))))
+ '(default ((t (:foreground "white" :background "black"))))
  '(ecb-tag-header-face ((((class color) (background dark)) (:background "SeaGreen1" :foreground "black"))))
  '(isearch ((t (:foreground "black" :background "yellow")))))
 
-(set-face-attribute 'default nil :height 105)
+(set-face-attribute 'default nil :height 90)
 
+(require 'yasnippet)
+(yas/initialize)
+(yas/load-directory "~/.emacs.d/elisp/yasnippet/snippets")
 
 ;; -----------------------------------------------------------------------------
 ;; Python-specific
 ;;
+(load-library "init_python")
 
 ; Make it easy to insert debug statements, and highlight them.
 (defun python-add-breakpoint ()
@@ -191,7 +195,6 @@
   ;(py-newline-and-indent)
   (insert "import ipdb; ipdb.set_trace()")
   (highlight-lines-matching-regexp "^[ 	]*import ipdb; ipdb.set_trace()"))
-(defvaralias 'py-mode-map 'python-mode-map)
 (define-key python-mode-map (kbd "C-x p") 'python-add-breakpoint)
 
 (defun annotate-pdb ()
