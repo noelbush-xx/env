@@ -2,6 +2,7 @@
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 (add-to-list 'interpreter-mode-alist '("python" . python-mode))
 (require 'python-mode)
+(defvaralias 'py-mode-map 'python-mode-map)
 (add-hook 'python-mode-hook
       (lambda ()
 	(set-variable 'py-indent-offset 4)

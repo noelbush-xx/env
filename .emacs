@@ -128,9 +128,9 @@
 ; Use Auto-complete
 (require 'auto-complete)
 (global-auto-complete-mode t)
-(require 'auto-complete-config nil t)
-(define-key ac-complete-mode-map "\t" 'ac-complete)
-(define-key ac-complete-mode-map "\r" nil)
+;; (require 'auto-complete-config nil t)
+;; (define-key ac-complete-mode-map "\t" 'ac-complete)
+;; (define-key ac-complete-mode-map "\r" nil)
 
 
 ;; -----------------------------------------------------------------------------
@@ -179,11 +179,11 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(default ((t (:foreground "white" :background "black" :bold t))))
+ '(default ((t (:foreground "white" :background "black"))))
  '(ecb-tag-header-face ((((class color) (background dark)) (:background "SeaGreen1" :foreground "black"))))
  '(isearch ((t (:foreground "black" :background "yellow")))))
 
-(set-face-attribute 'default nil :height 105)
+(set-face-attribute 'default nil :height 90)
 
 
 ;; -----------------------------------------------------------------------------
@@ -198,7 +198,6 @@
   ;(py-newline-and-indent)
   (insert "import ipdb; ipdb.set_trace()")
   (highlight-lines-matching-regexp "^[ 	]*import ipdb; ipdb.set_trace()"))
-(defvaralias 'py-mode-map 'python-mode-map)
 (define-key python-mode-map (kbd "C-x p") 'python-add-breakpoint)
 
 (defun annotate-pdb ()
