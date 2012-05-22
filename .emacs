@@ -79,18 +79,18 @@
 (define-key comint-mode-map [up] 'comint-previous-matching-input-from-input)
 
 ; Autopair matching elements (parentheses, etc.).
-(autoload 'autopair-global-mode "autopair" nil t)
-(autopair-global-mode)
-(add-hook 'lisp-mode-hook
-          #'(lambda () (setq autopair-dont-activate t)))
+;; (autoload 'autopair-global-mode "autopair" nil t)
+;; (autopair-global-mode)
+;; (add-hook 'lisp-mode-hook
+;;           #'(lambda () (setq autopair-dont-activate t)))
 
 ; Delete trailing spaces when saving.
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ; Set up Yasnippet.
-(require 'yasnippet)
-(yas/initialize)
-(yas/load-directory "~/.emacs.d/my-snippets/")
+;; (require 'yasnippet)
+;; (yas/initialize)
+;; (yas/load-directory "~/.emacs.d/elisp/yasnippet/snippets/")
 
 ; Make browse-url use Chrome.
 (setq browse-url-browser-function 'browse-url-generic
@@ -189,7 +189,9 @@
 ;; -----------------------------------------------------------------------------
 ;; Python-specific
 ;;
-(load-library "init_python")
+(require 'epy-init)
+;;(load-file "./.emacs.d/elisp/emacs-for-python/epy-init.el")
+;;(load-library "init_python")
 (require 'ipython)
 
 ; Make it easy to insert debug statements, and highlight them.
@@ -214,13 +216,13 @@
 (global-set-key "\C-ch" 'pylookup-lookup)
 
 ; Make Autopair work right with single and triple quotes.
-(add-hook 'python-mode-hook
-          #'(lambda ()
-              (push '(?' . ?')
-                    (getf autopair-extra-pairs :code))
-              (setq autopair-handle-action-fns
-                    (list #'autopair-default-handle-action
-                          #'autopair-python-triple-quote-action))))
+;; (add-hook 'python-mode-hook
+;;           #'(lambda ()
+;;               (push '(?' . ?')
+;;                     (getf autopair-extra-pairs :code))
+;;               (setq autopair-handle-action-fns
+;;                     (list #'autopair-default-handle-action
+;;                           #'autopair-python-triple-quote-action))))
 
 ; Be pedantic.
 (require 'python-pep8)
