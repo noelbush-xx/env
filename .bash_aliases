@@ -1,5 +1,10 @@
 alias lr='ls -ralt --color=auto'
+
+# Remove python bytecode files.
 alias rmpyc="find -name '*.pyc' -exec rm {} \;"
+
+# Remove those ".orig" files leftover from a manual merge
+alias rmorig="find -name '*.orig' -exec rm {} \;"
 
 # "fnl" == "find named like"
 function fnl() {
@@ -15,16 +20,3 @@ function pyg() {
 function fig() {
   find -exec egrep --color --with-filename "$@" {} \;
 }
-
-# beon --> switch virtualenv and git branch *AND* go to the right directory
-function beon() {
-  venv_name=$1
-  proj_name=`echo $venv_name | sed -e 's/_.\+//' -`
-  branch_name=`echo $venv_name | sed -e 's/^[^_]\+_//' -`
-  shopt -q expand_aliases
-  workon $venv_name
-#  cd $HOME/projects/$proj_name
-  git checkout $branch_name
-}
-
-complete -o nospace -F _virtualenvs beon

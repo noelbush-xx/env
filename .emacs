@@ -132,6 +132,8 @@
 ;; (define-key ac-complete-mode-map "\t" 'ac-complete)
 ;; (define-key ac-complete-mode-map "\r" nil)
 
+; Focus follows mouse over buffers.
+(setq mouse-autoselect-window t)
 
 ;; -----------------------------------------------------------------------------
 ;; Keybindings
@@ -186,6 +188,7 @@
 (set-face-attribute 'default nil :height 90)
 
 
+
 ;; -----------------------------------------------------------------------------
 ;; Python-specific
 ;;
@@ -200,7 +203,7 @@
   ;(py-newline-and-indent)
   (insert "import ipdb; ipdb.set_trace()")
   (highlight-lines-matching-regexp "^[ 	]*import ipdb; ipdb.set_trace()"))
-(define-key python-mode-map (kbd "C-x p") 'python-add-breakpoint)
+(define-key py-mode-map (kbd "C-x p") 'python-add-breakpoint)
 
 (defun annotate-pdb ()
   (interactive)
@@ -232,7 +235,12 @@
 ;; -----------------------------------------------------------------------------
 ;; Other mode specific
 ;;
+(autoload 'js2-mode "js2-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+
 (require 'feature-mode)
+(setq auto-mode-alist
+   (cons '("\\.feature" . feature-mode) auto-mode-alist))
 
 (autoload 'markdown-mode "markdown-mode.el"
    "Major mode for editing Markdown files" t)
@@ -245,6 +253,12 @@
 	  '(lambda ()
 	     (setq indent-tabs-mode nil)
 	     (define-key haml-mode-map "\C-m" 'newline-and-indent)))
+
+(require 'scss-mode)
+(setq scss-sass-command "\"/usr/local/bin/sass\"")
+(setq scss-compile-at-save nil)
+(setq auto-mode-alist
+   (cons '("\\.sass" . scss-mode) auto-mode-alist))
 
 (require 'coffee-mode)
 (defun coffee-custom ()
@@ -260,6 +274,7 @@
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(completion-ignored-extensions (quote (".o" "~" ".bin" ".lbin" ".so" ".a" ".ln" ".blg" ".bbl" ".elc" ".lof" ".glo" ".idx" ".lot" ".svn/" ".hg/" ".git/" ".bzr/" "CVS/" "_darcs/" "_MTN/" ".fmt" ".tfm" ".class" ".fas" ".lib" ".mem" ".x86f" ".sparcf" ".fasl" ".ufsl" ".fsl" ".dxl" ".pfsl" ".dfsl" ".p64fsl" ".d64fsl" ".dx64fsl" ".lo" ".la" ".gmo" ".mo" ".toc" ".aux" ".cp" ".fn" ".ky" ".pg" ".tp" ".vr" ".cps" ".fns" ".kys" ".pgs" ".tps" ".vrs" ".pyc" ".pyo" ".egg-info")))
+ '(ecb-layout-window-sizes (quote (("left8" (0.11439114391143912 . 0.2692307692307692) (0.11439114391143912 . 0.23076923076923078) (0.11439114391143912 . 0.28846153846153844) (0.11439114391143912 . 0.19230769230769232)))))
  '(ecb-options-version "2.40")
  '(ecb-source-file-regexps (quote ((".*" ("\\(^\\(\\.\\|#\\)\\|\\(~$\\|\\.\\(elc\\|obj\\|o\\|class\\|lib\\|dll\\|a\\|so\\|cache\\|pyc\\)$\\)\\)") ("^\\.\\(emacs\\|gnus\\)$")))))
  '(ecb-source-path (quote (("~/projects/ableton.com" "new website") ("~/projects/web" "old website") ("~/projects" "all projects") ("~/env" "environment") ("~/.virtualenvs" "virtual envs") ("~/platformer" "platformer") ("~/workspace" "workspace")))))
@@ -271,4 +286,3 @@
 ;;
 (server-start)
 (ecb-activate)
-

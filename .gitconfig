@@ -35,3 +35,11 @@
 [mergetool "meld"]
   cmd = meld "$BASE" "$LOCAL" "$REMOTE" "$MERGED"
   trustExitCode = false
+[push]
+	default = tracking
+[branch]
+	autosetuprebase = always
+[pivotal]
+	api-token = 05bb4b4ec2ff72fd9ecf60b6257f7d44
+	full-name = Noel Bush
+	integration-branch = demo
