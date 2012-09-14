@@ -1,15 +1,26 @@
 import XMonad
+import Data.Map    (fromList)
+import Data.Monoid (mappend)
 import XMonad.Actions.PhysicalScreens
+import XMonad.Actions.Volume
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers (isFullscreen, isDialog,  doFullFloat, doCenterFloat)
+import XMonad.Util.Dzen
 import XMonad.Util.Scratchpad (scratchpadSpawnAction, scratchpadManageHook, scratchpadFilterOutWorkspace)
 import XMonad.Util.Run(spawnPipe)
 import XMonad.Util.EZConfig(additionalKeys)
 import System.IO
 
 import qualified XMonad.StackSet as W
+
+alert = dzenConfig centered . show . round
+centered =
+        onCurr (center 150 66)
+    >=> font "-*-helvetica-*-r-*-*-64-*-*-*-*-*-*-*"
+    >=> addArgs ["-fg", "#80c0ff"]
+    >=> addArgs ["-bg", "#000040"]
 
 main = do
   xmproc <- spawnPipe "/usr/bin/xmobar"
@@ -22,7 +33,9 @@ main = do
                         , ppTitle = xmobarColor "green" "" . shorten 50
                         }
       } `additionalKeys`
-        ([ ((mod1Mask .|. controlMask, xK_z), spawn "gnome-screensaver-command --lock")
+        ([ ((mod1Mask .|. controlMask, xK_z), spawn "gnome-screensaver-command --lock"),
+           ((0, xK_F7), lowerVolume 4 >> return ()),
+           ((0, xK_F8), raiseVolume 4 >> return ())
         ]
         ++
 
