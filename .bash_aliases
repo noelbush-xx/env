@@ -13,10 +13,10 @@ function fnl() {
 
 # "pyg" == "python grep -- grep in python files"
 function pyg() {
-  find -name '*.py' -exec egrep --color --with-filename "$@" {} \;
+  find -regex '.*\.py$' -print0 | xargs -0 egrep "$@" --color --with-filename
 }
 
 # "fig" == "file grep -- grep in all files"
 function fig() {
-  find -exec egrep --color --with-filename "$@" {} \;
+  find -type f -print0 | xargs -0 egrep "$@" --color --with-filename
 }

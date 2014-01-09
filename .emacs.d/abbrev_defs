@@ -13,15 +13,27 @@
   '(
    ))
 
+(define-abbrev-table 'change-log-mode-abbrev-table '())
+
+(define-abbrev-table 'coffee-mode-abbrev-table '())
+
 (define-abbrev-table 'comint-mode-abbrev-table '())
 
 (define-abbrev-table 'completion-list-mode-abbrev-table '())
+
+(define-abbrev-table 'css-mode-abbrev-table '())
+
+(define-abbrev-table 'diff-mode-abbrev-table '())
 
 (define-abbrev-table 'emacs-lisp-mode-abbrev-table '())
 
 (define-abbrev-table 'fundamental-mode-abbrev-table '())
 
+(define-abbrev-table 'gfm-mode-abbrev-table '())
+
 (define-abbrev-table 'global-abbrev-table '())
+
+(define-abbrev-table 'haml-mode-abbrev-table '())
 
 (define-abbrev-table 'idl-mode-abbrev-table '())
 
@@ -31,11 +43,37 @@
   '(
    ))
 
+(define-abbrev-table 'js-mode-abbrev-table '())
+
 (define-abbrev-table 'lisp-mode-abbrev-table '())
+
+(define-abbrev-table 'log-edit-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-branch-manager-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-commit-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-diff-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-log-edit-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-log-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-reflog-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-stash-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-status-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-wazzup-mode-abbrev-table '())
+
+(define-abbrev-table 'markdown-mode-abbrev-table '())
 
 (define-abbrev-table 'objc-mode-abbrev-table
   '(
    ))
+
+(define-abbrev-table 'outline-mode-abbrev-table '())
 
 (define-abbrev-table 'pike-mode-abbrev-table
   '(
@@ -51,6 +89,20 @@
     ("while" "" python-skeleton-while 0)
    ))
 
+(define-abbrev-table 'python-pep8-mode-abbrev-table '())
+
+(define-abbrev-table 'python-pylint-mode-abbrev-table '())
+
+(define-abbrev-table 'ruby-mode-abbrev-table '())
+
+(define-abbrev-table 'scss-mode-abbrev-table '())
+
+(define-abbrev-table 'select-tags-table-mode-abbrev-table '())
+
+(define-abbrev-table 'sgml-mode-abbrev-table '())
+
+(define-abbrev-table 'sh-mode-abbrev-table '())
+
 (define-abbrev-table 'shell-mode-abbrev-table '())
 
 (define-abbrev-table 'snippet-mode-abbrev-table '())
@@ -60,4 +112,8 @@
 (define-abbrev-table 'text-mode-abbrev-table '())
 
 (define-abbrev-table 'vc-git-log-view-mode-abbrev-table '())
+
+(define-abbrev-table 'xml-mode-abbrev-table '())
+
+(define-abbrev-table 'xsl-mode-abbrev-table '())
 

@@ -1,5 +1,5 @@
 [user]
-	name = nsh
+	name = Noel Bush
 	email = noel.bush@ableton.com
 [alias]
         b = branch
@@ -27,11 +27,24 @@
         interactive = auto
         ui = auto
         pager = true
+[color "branch"]
+        current = yellow reverse
+        local = yellow
+        remote = green
+[color "diff"]
+        meta = yellow bold
+        frag = magenta bold
+        old = red
+        new = cyan
+[color "status"]
+        added = yellow
+        changed = green
+        untracked = cyan
 [giggle]
 	main-window-maximized = false
 	main-window-geometry = 1918x944+0+17
 [merge]
-  tool = meld
+	tool = meld
 [mergetool "meld"]
   cmd = meld "$BASE" "$LOCAL" "$REMOTE" "$MERGED"
   trustExitCode = false

@@ -61,6 +61,9 @@
 (setq lambda-symbol (string (make-char 'greek-iso8859-7 107)))
 (add-hook 'after-change-major-mode-hook (lambda () (lambda-mode 1)))
 
+; Sort case insensitively.
+(setq sort-fold-case t)
+
 ; make buffer names more understandable
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'reverse)
@@ -70,6 +73,10 @@
 
 ; Let us grep our buffers, brothers.
 (require 'grep-buffers)
+
+;; bind rgrep to Control-g
+(global-set-key (kbd "C-x g") 'rgrep)
+
 
 ; Change comint to allow cycling through input history using arrow keys.
 (require 'comint)
@@ -113,13 +120,13 @@
 ;(global-set-key [(meta super right)] 'cycbuf-switch-to-next-buffer-no-timeout)
 ;(global-set-key [(meta super left)]  'cycbuf-switch-to-previous-buffer-no-timeout)
 
-; Load Cedet (needed for ECB)
-(global-ede-mode 1)                      ; Enable the Project management system
-(semantic-mode 1)
+;; ; Load Cedet (needed for ECB)
+;; (global-ede-mode 1)                      ; Enable the Project management system
+;; (semantic-mode 1)
 
-; Set up ECB
-(add-to-list 'load-path "~/.emacs.d/elisp/ecb-2.40")
-(require 'ecb)
+;; ; Set up ECB
+;; (add-to-list 'load-path "~/.emacs.d/elisp/ecb-2.40")
+;; (require 'ecb)
 
 ;; Line numbering
 (setq linum-format "%4d")
@@ -134,6 +141,18 @@
 
 ; Focus follows mouse over buffers.
 (setq mouse-autoselect-window t)
+
+; highlight-symbol
+(add-to-list 'load-path "/path/to/highlight-symbol")
+(require 'highlight-symbol)
+
+(global-set-key [(control f3)] 'highlight-symbol-at-point)
+(global-set-key [f3] 'highlight-symbol-next)
+(global-set-key [(shift f3)] 'highlight-symbol-prev)
+(global-set-key [(meta f3)] 'highlight-symbol-prev)
+
+;; It's magit!
+(require 'magit)
 
 ;; -----------------------------------------------------------------------------
 ;; Keybindings
@@ -167,6 +186,9 @@
 (global-set-key (read-kbd-macro "<insert>") 'nil)
 ;(global-unset-key (kbd "C-M-l"))
 
+(require 'gimme-cat)
+(global-set-key "\C-c\k" 'gimme-cat)
+
 
 ;; -----------------------------------------------------------------------------
 ;; Appearance
@@ -182,7 +204,7 @@
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(default ((t (:foreground "white" :background "black"))))
- '(ecb-tag-header-face ((((class color) (background dark)) (:background "SeaGreen1" :foreground "black"))))
+ ;; '(ecb-tag-header-face ((((class color) (background dark)) (:background "SeaGreen1" :foreground "black"))))
  '(isearch ((t (:foreground "black" :background "yellow")))))
 
 (set-face-attribute 'default nil :height 90)
@@ -195,7 +217,8 @@
 (require 'epy-init)
 ;;(load-file "./.emacs.d/elisp/emacs-for-python/epy-init.el")
 ;;(load-library "init_python")
-(require 'ipython)
+;;(require 'python-mode)
+;;(require 'ipython)
 
 ; Make it easy to insert debug statements, and highlight them.
 (defun python-add-breakpoint ()
@@ -203,7 +226,7 @@
   ;(py-newline-and-indent)
   (insert "import ipdb; ipdb.set_trace()")
   (highlight-lines-matching-regexp "^[ 	]*import ipdb; ipdb.set_trace()"))
-(define-key py-mode-map (kbd "C-x p") 'python-add-breakpoint)
+(global-set-key (kbd "C-x p") 'python-add-breakpoint)
 
 (defun annotate-pdb ()
   (interactive)
@@ -237,6 +260,16 @@
 ;;
 (autoload 'js2-mode "js2-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+(setq js2-mode-hook
+      '(lambda () (progn
+		    (set-variable 'indent-tabs-mode nil))))
+(custom-set-variables
+ '(js2-basic-offset 2)
+ '(js2-bounce-indent-p t)
+)
+
+(add-to-list 'auto-mode-alist '("\\.xslt?$" . nxml-mode))
+
 
 (require 'feature-mode)
 (setq auto-mode-alist
@@ -248,7 +281,6 @@
    (cons '("\\.md" . markdown-mode) auto-mode-alist))
 
 (require 'haml-mode)
-
 (add-hook 'haml-mode-hook
 	  '(lambda ()
 	     (setq indent-tabs-mode nil)
@@ -264,25 +296,47 @@
 (defun coffee-custom ()
   "coffee-mode-hook"
   (set (make-local-variable 'tab-width) 2))
-
 (add-hook 'coffee-mode-hook
 	  '(lambda() (coffee-custom)))
+
+;; (require 'mo-mode)
+;; (setq auto-mode-alist
+;;    (cons '("\\.mo" . mo-mode) auto-mode-alist))
+
+;; (eval-after-load 'po-mode '(load "gb-po-mode"))
 
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(completion-ignored-extensions (quote (".o" "~" ".bin" ".lbin" ".so" ".a" ".ln" ".blg" ".bbl" ".elc" ".lof" ".glo" ".idx" ".lot" ".svn/" ".hg/" ".git/" ".bzr/" "CVS/" "_darcs/" "_MTN/" ".fmt" ".tfm" ".class" ".fas" ".lib" ".mem" ".x86f" ".sparcf" ".fasl" ".ufsl" ".fsl" ".dxl" ".pfsl" ".dfsl" ".p64fsl" ".d64fsl" ".dx64fsl" ".lo" ".la" ".gmo" ".mo" ".toc" ".aux" ".cp" ".fn" ".ky" ".pg" ".tp" ".vr" ".cps" ".fns" ".kys" ".pgs" ".tps" ".vrs" ".pyc" ".pyo" ".egg-info")))
- '(ecb-layout-window-sizes (quote (("left8" (0.11439114391143912 . 0.2692307692307692) (0.11439114391143912 . 0.23076923076923078) (0.11439114391143912 . 0.28846153846153844) (0.11439114391143912 . 0.19230769230769232)))))
- '(ecb-options-version "2.40")
- '(ecb-source-file-regexps (quote ((".*" ("\\(^\\(\\.\\|#\\)\\|\\(~$\\|\\.\\(elc\\|obj\\|o\\|class\\|lib\\|dll\\|a\\|so\\|cache\\|pyc\\)$\\)\\)") ("^\\.\\(emacs\\|gnus\\)$")))))
- '(ecb-source-path (quote (("~/projects/ableton.com" "new website") ("~/projects/web" "old website") ("~/projects" "all projects") ("~/env" "environment") ("~/.virtualenvs" "virtual envs") ("~/platformer" "platformer") ("~/workspace" "workspace")))))
+ '(completion-ignored-extensions (quote (".o" "~" ".bin" ".lbin" ".so" ".a" ".ln" ".blg" ".bbl" ".elc" ".lof" ".glo" ".idx" ".lot" ".svn/" ".hg/" ".git/" ".bzr/" "CVS/" "_darcs/" "_MTN/" ".fmt" ".tfm" ".class" ".fas" ".lib" ".mem" ".x86f" ".sparcf" ".fasl" ".ufsl" ".fsl" ".dxl" ".pfsl" ".dfsl" ".p64fsl" ".d64fsl" ".dx64fsl" ".lo" ".la" ".gmo" ".mo" ".toc" ".aux" ".cp" ".fn" ".ky" ".pg" ".tp" ".vr" ".cps" ".fns" ".kys" ".pgs" ".tps" ".vrs" ".pyc" ".pyo" ".egg-info"))))
+;;  '(ecb-layout-window-sizes (quote (("left8" (0.11439114391143912 . 0.2692307692307692) (0.11439114391143912 . 0.23076923076923078) (0.11439114391143912 . 0.28846153846153844) (0.11439114391143912 . 0.19230769230769232)))))
+;;  '(ecb-options-version "2.40")
+;;  '(ecb-source-file-regexps (quote ((".*" ("\\(^\\(\\.\\|#\\)\\|\\(~$\\|\\.\\(elc\\|obj\\|o\\|class\\|lib\\|dll\\|a\\|so\\|cache\\|pyc\\)$\\)\\)") ("^\\.\\(emacs\\|gnus\\)$")))))
+;;  '(ecb-source-path (quote (("~/projects/ableton.com" "new website") ("~/projects/web" "old website") ("~/projects" "all projects") ("~/env" "environment") ("~/.virtualenvs" "virtual envs") ("~/platformer" "platformer") ("~/workspace" "workspace")))))
 
-(setq ecb-tip-of-the-day nil)
+;; (setq ecb-tip-of-the-day nil)
+
+;; Interactively url encode/decode a string (thanks http://stackoverflow.com/questions/611831/how-to-url-decode-a-string-in-emacs-lisp)
+(defun func-region (start end func)
+  "run a function over the region between START and END in current buffer."
+  (save-excursion
+    (let ((text (delete-and-extract-region start end)))
+      (insert (funcall func text)))))
+
+(defun hex-region (start end)
+  "urlencode the region between START and END in current buffer."
+  (interactive "r")
+  (func-region start end #'url-hexify-string))
+
+(defun unhex-region (start end)
+  "de-urlencode the region between START and END in current buffer."
+  (interactive "r")
+  (func-region start end #'url-unhex-string))
 
 ;;
 ;; Last things last....
 ;;
 (server-start)
-(ecb-activate)
+;; (ecb-activate)
